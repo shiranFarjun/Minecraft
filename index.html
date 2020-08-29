@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Minecraft</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .container-game {
+            width: 60%;
+            display: grid;
+            margin: 0 auto;
+            height: 100%;
+            grid-template-columns: repeat(20, 35px);
+            /* grid-template-rows: repeat(20, 35px); */
+        }
+
+        .toolBar {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: black;
+            width: 10%;
+            height: 100%;
+        }
+
+        .img {
+            /* width: 100%;
+            height: 100%; */
+            border: .5px black solid;
+            align-self: center;
+            justify-self: center;
+        }
+
+        .ground {
+            background: url(./imgsmall/dirt.png)no-repeat center center/cover;
+        }
+
+        .grass {
+            background: url(./imgsmall/grass.png)no-repeat center center/cover;
+        }
+
+        .sky {
+            background-color: rgb(141, 191, 255);
+        }
+
+        .cloud {
+            background: url(./imgsmall/cloud.png)no-repeat center center/cover;
+        }
+
+        .Wood {
+            background: url(./imgsmall/leaf.png)no-repeat center center/cover;
+        }
+
+        .Tree-trunk {
+            background: url(./imgsmall/trunk.png)no-repeat center center/cover;
+        }
+
+        .rock {
+            background: url(./imgsmall/rock.png)no-repeat center center/cover;
+        }
+
+
+        /*                      //////////////////// tool  //////////////////////////                     */
+
+        .tool {
+            margin: 4%;
+            border: 1px solid red;
+            width: 91%;
+            height: 12%;
+        }
+
+        #pickaxe {
+            background: url(./img/pickaxe.png)no-repeat center center/cover;
+        }
+
+        #shovel {
+            background: url(./img/shovel.png)no-repeat center center/cover;
+        }
+
+        #axe {
+            background: url(./img/axe.png)no-repeat center center/cover;
+        }
+
+        #change {
+            background: white;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-game"></div>
+    <div class="toolBar"></div>
+
+    <script>
+        let isSelectTools = false;
+        let isSelectInventory = false;
+
+        let matrix = [
+            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+            [2, 2, 3, 3, 3, 2, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+            [2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+            [2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2],
+            [2, 2, 2, 2, 2, 2, 2, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 2, 2, 2],
+            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 2, 2, 2],
+            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 2, 2, 2],
+            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5, 2, 2, 2, 2],
+            [2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5, 2, 2, 2, 2],
+            [2, 2, 2, 4, 4, 4, 2, 2, 2, 2, 2, 2, 6, 6, 2, 5, 2, 2, 2, 6],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ]
+
+        let containerGame = document.querySelector('.container-game');
+        for (let row = 0; row < matrix.length; row++) {
+            for (let col = 0; col < matrix[row].length; col++) {
+                let img = document.createElement('div');
+                img.setAttribute("data-location", [row, col]);
+                img.setAttribute("data-type", "tile");
+
+                switch (matrix[row][col]) {
+                    case 0:
+                        img.setAttribute("class", "ground");
+                        break;
+                    case 1:
+                        img.setAttribute("class", "grass");
+                        break;
+                    case 2:
+                        img.setAttribute("class", "sky");
+                        break;
+                    case 3:
+                        img.setAttribute("class", "cloud");
+                        break;
+                    case 4:
+                        img.setAttribute("class", "Wood");
+                        break;
+                    case 5:
+                        img.setAttribute("class", "Tree-trunk");
+                        break;
+                    case 6:
+                        img.setAttribute("class", 'rock');
+                        break;
+                }
+                containerGame.appendChild(img);
+            }
+        }
+
+
+        let toolBar = document.querySelector('.toolBar');                                //class that already exists in html
+        let tools = ["pickaxe", "shovel", "axe", "change"];                           //Puts all the div inside the arr
+        for (let i = 0; i < tools.length; i++) {
+            let tool = document.createElement('div');
+            tool.classList.add("tool");
+            tool.setAttribute("id", tools[i]);
+            tool.addEventListener('click', getPosition);
+            toolBar.appendChild(tool);
+        }
+
+        let po = document.querySelectorAll('div[data-type ="tile"]');
+        po.forEach(el => {
+            el.addEventListener('click', func);
+        });
+
+        function func(e) {
+            let target = e.target || e.srcElement;
+                location = target.dataset.location;
+                console.log("location", location);
+            // console.log("befor",isSelectTools);
+            // if (isSelectTools) {
+              
+            //     // removeTile(location, target);                      ///return?
+            // } else {
+            //     console.log("You did not choose which action to perform on the screen")
+            // }
+        }
+
+        // function removeTile(location, target) {
+        //     console.log("locationRemove", location);
+        //     console.log("targetRemove", target);
+        //     // e.style.background-color =
+        // }
+
+
+        function getPosition(evt) {
+            // console.log("befor",isSelectTools);
+            isSelectTools = true;
+            // console.log("aftar",isSelectTools);
+
+            let target = evt.target || evt.srcElement;
+
+            // console.log("target.id",target.id);
+            switch (target.id) {
+                case "pickaxe":
+                    console.log("pickaxe");
+                    break;
+                case "shovel":
+                    console.log("shovel");
+                    break;
+                case "axe":
+                    console.log("axe");
+                    break;
+                case "change":
+                    console.log("change");
+                    break;
+            }
+
+        }
+
+// const divs = document.querySelectorAll('div');
+// for (let i = 0; i < divs.length; i++) {
+//     divs[i].onclick = function (e) {
+//         let target = e.target || e.srcElement;
+//         // .style.backgroundColor = bgChange();
+//         // return this.state = e.target;
+//         console.log("e", target);
+//         // target.style.backgroundColor=String.fromCodePoint("#8dbfff");
+//     }
+// }
+
+    </script>
+</body>
+
+</html>
